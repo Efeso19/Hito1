@@ -1,17 +1,33 @@
 #include <SFML/Graphics.hpp>
-
+#include <iostream>
+/**
+ * el ejecutable deberá leer de la fuente de información donde esté el mapa 
+ * almacenado y mostrará los sprites y realizará el scroll horizontal correctamente. 
+ */
 int main(){
     
     //Creamos la ventana de juego
     sf::RenderWindow window(sf::VideoMode(1280, 600), "Cargar mapa!");
-    sf::CircleShape shape(380.f);
-    shape.setFillColor(sf::Color::White);
-    shape.setOrigin(800.0, -20.0);
+   
+    
+    
+        /***Shapes***/
+    sf::RectangleShape personaje(sf::Vector2f(20,20));
+    sf::RectangleShape background();
+    //Tranformaciones
+    
+    personaje.setFillColor(sf::Color::Red);
+    personaje.setOutlineColor(sf::Color::Blue);
+    personaje.setOutlineThickness(10);
+    personaje.setOrigin(-20,-20);
+    
+    /****Textures****/
+    sf::Texture 
+    
+    
+    
     while(window.isOpen()){
-        
-        //printf("%f", shape.getPosition().x);
-        if(shape.getPosition().x<1000)
-            shape.move(0.1, 0.00); //PRUEBA
+        personaje.move(0.1, 0);
         
         sf::Event event;
         while(window.pollEvent(event)){ //CIERRE DE VENTANA
@@ -20,7 +36,7 @@ int main(){
         }
         
         window.clear();
-        window.draw(shape);
+        window.draw(personaje);
         window.display();
     }
     

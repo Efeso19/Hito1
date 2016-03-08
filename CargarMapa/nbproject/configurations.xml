@@ -36,9 +36,12 @@
       </toolsSet>
       <compileType>
         <ccTool>
+          <stripSymbols>true</stripSymbols>
+          <standard>8</standard>
           <incDir>
             <pElem>../../../SFML-GCC-4.8.1-MinGW-master/include</pElem>
           </incDir>
+          <commandLine>-std=c++11</commandLine>
         </ccTool>
         <linkerTool>
           <linkerLibItems>

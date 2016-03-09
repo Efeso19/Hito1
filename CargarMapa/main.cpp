@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#define kVel 15
+#define kVel 5
 /**
  * el ejecutable deberá leer de la fuente de información donde esté el mapa 
  * almacenado y mostrará los sprites y realizará el scroll horizontal correctamente. 
@@ -18,8 +18,27 @@ int main(){
     sf::RectangleShape *personaje;
     personaje = new sf::RectangleShape(sf::Vector2f(20, 20));
     
+    //Declaro los tipos de fuentes
+    sf::Font fuenteParaPruebas;
     
+    //Cargo las fuentes 
+    if (!fuenteParaPruebas.loadFromFile("resources/arial.ttf")){
+        std::cerr << "Error al cargar la fuente arial.ttf";
+    }
     
+    //textos que ayudan a saber en que pixel estoy
+    sf::Text *cero;
+    cero = new sf::Text("0", fuenteParaPruebas);
+    sf::Text *quinientos;
+    quinientos = new sf::Text("500", fuenteParaPruebas);
+    sf::Text *mil;
+    mil = new sf::Text("1000", fuenteParaPruebas);
+    sf::Text *milquinientos;
+    milquinientos = new sf::Text("1500", fuenteParaPruebas);
+    sf::Text *dosmil;
+    dosmil = new sf::Text("2000", fuenteParaPruebas);
+    sf::Text *dosmilquinientos;
+    dosmilquinientos = new sf::Text("2500", fuenteParaPruebas);
     
      /****Textures****/
     sf::Texture texturaBackground;
@@ -44,12 +63,38 @@ int main(){
     personaje->setOutlineColor(sf::Color::Blue);
     personaje->setOutlineThickness(10);
     personaje->setPosition(100, 415);
-    //personaje.setOrigin(-20,-20);
+
+    cero->setColor(sf::Color::Red);
+    cero->setCharacterSize(30);
+    cero->setPosition(0, 0);
+    
+    quinientos->setColor(sf::Color::Red);
+    quinientos->setCharacterSize(30);
+    quinientos->setPosition(500, 0);
+    
+    mil->setColor(sf::Color::Red);
+    mil->setCharacterSize(30);
+    mil->setPosition(1000, 0);
+    
+    milquinientos->setColor(sf::Color::Red);
+    milquinientos->setCharacterSize(30);
+    milquinientos->setPosition(1500, 0);
+    
+    dosmil->setColor(sf::Color::Red);
+    dosmil->setCharacterSize(30);
+    dosmil->setPosition(2000, 0);
+    
+    dosmilquinientos->setColor(sf::Color::Red);
+    dosmilquinientos->setCharacterSize(30);
+    dosmilquinientos->setPosition(2500, 0);
     
     background.setPosition(0.0, 0.0);
     
-   
-
+    
+    
+    //aux
+    int desplazamientoCamara=0;
+    //tambien las variables primitiva deben ser declaradas con memoria dinamica?
 
     //Bucle del juego
     while (window.isOpen())
@@ -76,24 +121,40 @@ int main(){
                         case sf::Keyboard::Right:
                             //Escala por defecto
                             personaje->move(kVel,0);
-                            if(personaje->getPosition().x >= 493 && camara->getCenter().x <=2023){
-                                camara->move(kVel,0);
-                            }
-                            std::cout<< camara->getCenter().x<<std::endl;
-                            std::cout<< "aaaaaaaaa"<<std::endl;
-                            std::cout<< personaje->getPosition().x<<std::endl;
                             
-                        
+                            if(desplazamientoCamara==0){
+                                if(personaje->getPosition().x >= camara->getSize().x*0.6 && camara->getCenter().x <=2023){
+                                    camara->move(kVel,0);
+                                    desplazamientoCamara=desplazamientoCamara+kVel; 
+                                }
+                            }else{
+                                if(personaje->getPosition().x>= camara->getSize().x*0.6 + desplazamientoCamara && camara->getCenter().x<=2023){
+                                    camara->move(kVel,0);
+                                    desplazamientoCamara=desplazamientoCamara+kVel;  
+
+                                }
+                            }
+                            /*
+                            std::cout<< "Centro de la camara..."<<std::endl;
+                            std::cout<< camara->getCenter().x<<std::endl;
+                            std::cout<< "Posicion del sprite"<<std::endl;
+                            std::cout<< personaje->getPosition().x<<std::endl;
+                            */
+                            
+                            
                         break;
 
                         case sf::Keyboard::Left:
-                            //Reflejo vertical
+                            
                             personaje->move(-kVel,0);
-                            if(personaje->getPosition().x <= 2023 && camara->getCenter().x != 533 ){
-                                camara->move(-kVel,0);
-                            }    
-                            std::cout<< camara->getCenter().x<<std::endl;
+                            if(desplazamientoCamara!=0){
+                                if(personaje->getPosition().x<= camara->getSize().x*0.4 + desplazamientoCamara && camara->getCenter().x!=533){
+                                    camara->move(-kVel,0);
+                                    desplazamientoCamara=desplazamientoCamara-kVel;   
+                                }
+                            }
 
+                            
                         break;
                         
                         /*
@@ -129,7 +190,14 @@ int main(){
         window.clear();
         window.draw(background);
         window.draw(*personaje);
-         window.setView(*camara);
+        window.draw(*cero);
+        window.draw(*quinientos);
+        window.draw(*mil);
+        window.draw(*milquinientos);
+        window.draw(*dosmil);
+        window.draw(*dosmilquinientos);
+        window.setView(*camara);
+        
         window.display();
     }
 

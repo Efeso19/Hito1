@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include "Menu.h"
 #include <SFML/Graphics.hpp>
 
 /*
@@ -13,7 +13,7 @@
 int main(){
     
     //Creamos la ventana de juego con unas dimensiones de 1280x600
-    sf::RenderWindow window(sf::VideoMode(1280, 600), "Hacer Menu!");
+    sf::RenderWindow window(sf::VideoMode(1066, 600), "Hacer Menu!");
     
         /****PARTE DEL TEXTO****/
     //Declaro los tipos de fuentes
@@ -24,65 +24,100 @@ int main(){
         std::cerr << "Error al cargar la fuente arial.ttf";
     }
     
+    Menu menu(window.getSize().x, window.getSize().y);
     
-    //Declaro el array
-    sf::Text nuevaPartida("Nueva Partida", fuenteParaMenu);
-    sf::Text cargarPartida("Cargar Partida", fuenteParaMenu);
-    sf::Text controles("Controles", fuenteParaMenu);
-    sf::Text opciones("Opciones", fuenteParaMenu);
-    sf::String stringCreditos(L"Créditos");
-    sf::Text creditos(stringCreditos, fuenteParaMenu);
-    sf::Text salirDelJuego("Salir del Juego", fuenteParaMenu);
-    
-    
-    //Cambio los parametros del texto
-    nuevaPartida.setCharacterSize(30);
-    nuevaPartida.setColor(sf::Color::White);
-    
-    cargarPartida.setCharacterSize(30);
-    cargarPartida.setColor(sf::Color::White);
-    
-    controles.setCharacterSize(30);
-    controles.setColor(sf::Color::White);
-    
-    opciones.setCharacterSize(30);
-    opciones.setColor(sf::Color::White);
-    
-    creditos.setCharacterSize(30);
-    creditos.setColor(sf::Color::White);
-    
-    salirDelJuego.setCharacterSize(30);
-    salirDelJuego.setColor(sf::Color::White);
-    
-    
-    
-    /****POSITION****/
-    nuevaPartida.setPosition(560, 150);
-    cargarPartida.setPosition(555, 190);
-    controles.setPosition(580, 230);
-    opciones.setPosition(585, 270);
-    creditos.setPosition(583, 310);
-    salirDelJuego.setPosition(555, 350);
+    int mostrarLayout=6; //variable para poder mostrar las diferentes partes del menu
     
     while(window.isOpen()){
         
         
         sf::Event event;
-        while(window.pollEvent(event)){ 
-            if(event.type == sf::Event::Closed){
-                window.close();
+        while (window.pollEvent(event)){
+            switch(event.type){
+                //Si se recibe el evento de cerrar la ventana la cierro
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+                //Se pulsó una tecla, imprimo su codigo
+                case sf::Event::KeyPressed:
+                    //Verifico si se pulsa alguna tecla de movimiento
+                    switch(event.key.code) {
+                        //Mapeo del cursor                        
+                        case sf::Keyboard::Up:
+                            menu.moveUp();
+                            break;
+                        
+                        case sf::Keyboard::Down:
+                            menu.moveDown();
+                            break;
+                                                   
+                        case sf::Keyboard::Return:
+                        case sf::Keyboard::Space:     
+                            switch(menu.GetPressedItem()){
+                                case 0:
+                                    std::cout<<"Nueva Partida ha sido seleccionado"<<std::endl;                                    
+                                    mostrarLayout = menu.GetPressedItem();
+                                    break;
+                                case 1:
+                                    std::cout<<"Cargar Partida ha sido seleccionado"<<std::endl;
+                                    mostrarLayout = menu.GetPressedItem();
+                                    break;
+                                case 2:
+                                    std::cout<<"Controles ha sido seleccionado"<<std::endl;
+                                    mostrarLayout = menu.GetPressedItem();
+                                    break;
+                                case 3:
+                                    std::cout<<"Opciones ha sido seleccionado"<<std::endl;
+                                    mostrarLayout = menu.GetPressedItem();
+                                    break;
+                                case 4:
+                                    std::cout<<"Creditos ha sido seleccionado"<<std::endl;
+                                    mostrarLayout = menu.GetPressedItem();
+                                    break;
+                                case 5:
+                                    window.close();
+                                    mostrarLayout = menu.GetPressedItem();
+                                    break;                                    
+                                    
+                            } 
+                            break;
+                        
+                        
+                        
+                        case sf::Keyboard::Escape:
+                            
+                            break;
+                        
+                        //Cualquier tecla desconocida se imprime por pantalla su código
+                        default:
+                            std::cout << event.key.code << std::endl;
+                            break;
+                              
+                    }
+
             }
-                
+            
         }
         
         window.clear();
-        window.draw(nuevaPartida);
-        window.draw(cargarPartida);
-        window.draw(controles);
-        window.draw(opciones);
-        window.draw(creditos);
-        window.draw(salirDelJuego);
-        
+        menu.draw(window);
+        //segun la tecla presionada 
+        if(mostrarLayout == 0){
+            menu.nuevaPartida(window);
+        }
+        if(mostrarLayout == 1){
+            menu.cargarPartida(window);
+        }
+        if(mostrarLayout == 2){
+            menu.controles(window);
+        }
+        if(mostrarLayout == 3){
+            
+        }
+        if(mostrarLayout == 4){
+            menu.creditos(window);
+        }
+    
         window.display();
     }
     

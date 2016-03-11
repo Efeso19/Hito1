@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/Menu.o \
 	${OBJECTDIR}/main.o
 
 
@@ -73,6 +74,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/hacermenu.exe: ../../../SFML-GCC-4.8.
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/hacermenu.exe: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/hacermenu ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/Menu.o: Menu.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../../../SFML-GCC-4.8.1-MinGW-master/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Menu.o Menu.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}

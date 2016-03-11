@@ -1,4 +1,4 @@
-build/Debug/MinGW-Windows/main.o: main.cpp Menu.h \
+build/Debug/MinGW-Windows/Menu.o: Menu.cpp Menu.h \
  ../../../SFML-GCC-4.8.1-MinGW-master/include/SFML/Graphics.hpp \
  ../../../SFML-GCC-4.8.1-MinGW-master/include/SFML/Window.hpp \
  ../../../SFML-GCC-4.8.1-MinGW-master/include/SFML/System.hpp \

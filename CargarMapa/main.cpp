@@ -1,26 +1,29 @@
 #include <SFML/Graphics.hpp>
+#include "Cargar.h"
+#include "tinyxml2.h"
+#include <Cargar.cpp>
 #include <iostream>
-
+#include <array>
 #define kVel 5
-/**
+/*
  * el ejecutable deberá leer de la fuente de información donde esté el mapa 
  * almacenado y mostrará los sprites y realizará el scroll horizontal correctamente. 
  */
 int main(){
     
-    
     //Creamos la ventana de juego
+    
     sf::RenderWindow window(sf::VideoMode(1066, 600), "Cargar mapa!");
-   
     
     
-        /***Shapes***/
-    sf::RectangleShape *personaje;
-    personaje = new sf::RectangleShape(sf::Vector2f(20, 20));
+    /***Shapes***/
+    
+    sf::RectangleShape *personaje = new sf::RectangleShape(sf::Vector2f(20, 20));
     
     //Declaro los tipos de fuentes
-    sf::Font fuenteParaPruebas;
     
+    sf::Font fuenteParaPruebas;
+    //como se haria una fuente dinamica?
     //Cargo las fuentes 
     if (!fuenteParaPruebas.loadFromFile("resources/arial.ttf")){
         std::cerr << "Error al cargar la fuente arial.ttf";
@@ -41,6 +44,7 @@ int main(){
     dosmilquinientos = new sf::Text("2500", fuenteParaPruebas);
     
      /****Textures****/
+    
     sf::Texture texturaBackground;
     if (!texturaBackground.loadFromFile("resources/background.jpg"))
     {
@@ -53,14 +57,19 @@ int main(){
     sf::Sprite background(texturaBackground);
     
     /***Views***/
-    sf::View *camara;
-    camara= new sf::View(sf::FloatRect(0,0, 1066, 600));
+    
+    sf::View *camara = new sf::View(sf::FloatRect(0,0, 1066, 600));
     //los dos primeros valores son para posicionar la camara. Los otros dos valores son para definir el alto y el ancho de la camara
     
+    /**Map**/
+    Cargar mapa;
+   
+    
+   
     //Tranformaciones
     
     personaje->setFillColor(sf::Color::Red);
-    personaje->setOutlineColor(sf::Color::Blue);
+    personaje->setOutlineColor(sf::Color::Yellow);
     personaje->setOutlineThickness(10);
     personaje->setPosition(100, 415);
 
@@ -90,20 +99,19 @@ int main(){
     
     background.setPosition(0.0, 0.0);
     
-    
-    
     //aux
     int desplazamientoCamara=0;
     //tambien las variables primitiva deben ser declaradas con memoria dinamica?
-
+    //no, solo aquellas que sean de sfml, como text o sprite
+    int posicionOrigenCamara=camara->getCenter().x;
+    
+    
     //Bucle del juego
-    while (window.isOpen())
-    {
+    while (window.isOpen()){
         //Bucle de obtención de eventos
         sf::Event event;
         while (window.pollEvent(event))
         {
-            
             switch(event.type){
                 
                 //Si se recibe el evento de cerrar la ventana la cierro
@@ -121,18 +129,27 @@ int main(){
                         case sf::Keyboard::Right:
                             //Escala por defecto
                             personaje->move(kVel,0);
-                            
                             if(desplazamientoCamara==0){
-                                if(personaje->getPosition().x >= camara->getSize().x*0.6 && camara->getCenter().x <=2023){
+                                if(personaje->getPosition().x >= camara->getSize().x*0.6 && camara->getCenter().x <=(background.getLocalBounds().width*0.79)){
+                                    //con background.getLocalBounds().width*0.79 calculo la parte derecha del mapa para fijar la camara
                                     camara->move(kVel,0);
                                     desplazamientoCamara=desplazamientoCamara+kVel; 
                                 }
+                                 
                             }else{
-                                if(personaje->getPosition().x>= camara->getSize().x*0.6 + desplazamientoCamara && camara->getCenter().x<=2023){
+                                if(personaje->getPosition().x>= camara->getSize().x*0.6 + desplazamientoCamara && camara->getCenter().x<=(background.getLocalBounds().width*0.79)){
                                     camara->move(kVel,0);
                                     desplazamientoCamara=desplazamientoCamara+kVel;  
 
                                 }
+                            }
+                            
+                            if(personaje->getPosition().x == 2300){
+                                //este valor de 2300 es una prueba, se puede quitar
+                                //cada vez que entro al if realiza el zoom, hay que controlarlo con algun contador
+                                //camara->zoom(0.9);
+                                //camara->setRotation(90.0);
+                                //amara->setSize(533, 300);
                             }
                             /*
                             std::cout<< "Centro de la camara..."<<std::endl;
@@ -140,21 +157,16 @@ int main(){
                             std::cout<< "Posicion del sprite"<<std::endl;
                             std::cout<< personaje->getPosition().x<<std::endl;
                             */
-                            
-                            
                         break;
 
                         case sf::Keyboard::Left:
-                            
                             personaje->move(-kVel,0);
                             if(desplazamientoCamara!=0){
-                                if(personaje->getPosition().x<= camara->getSize().x*0.4 + desplazamientoCamara && camara->getCenter().x!=533){
+                                if(personaje->getPosition().x<= camara->getSize().x*0.4 + desplazamientoCamara && camara->getCenter().x!=posicionOrigenCamara){
                                     camara->move(-kVel,0);
                                     desplazamientoCamara=desplazamientoCamara-kVel;   
                                 }
                             }
-
-                            
                         break;
                         
                         /*
@@ -179,27 +191,24 @@ int main(){
                         //Cualquier tecla desconocida se imprime por pantalla su código
                         default:
                             std::cout << event.key.code << std::endl;
+                            std::cout << "tu madre" << std::endl;
                         break;
                               
                     }
-
-            }
-            
+            } 
         }
-
         window.clear();
-        window.draw(background);
+        //window.draw(background);
         window.draw(*personaje);
-        window.draw(*cero);
+        //window.draw(*cero);
         window.draw(*quinientos);
         window.draw(*mil);
         window.draw(*milquinientos);
         window.draw(*dosmil);
         window.draw(*dosmilquinientos);
         window.setView(*camara);
-        
+        mapa.dibuja();
         window.display();
     }
-
     return 0;
 }
